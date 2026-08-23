@@ -1,0 +1,24 @@
+# Recall backend dependencies (MVP mock mode; no heavy external services required).
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pydantic-settings
+python-dotenv
+httpx
+python-multipart
+
+# Test deps
+pytest
+pytest-asyncio
+
+# ---- Optional heavy dependencies (commented out by default) ----
+# Enable these only when you want REAL capabilities. They are NOT required to
+# run the MVP: the app falls back to deterministic local mocks when absent.
+#   * chromadb        -> real vector similarity search (dict fallback otherwise)
+#   * paddlepaddle / paddleocr -> real OCR (mock OCR otherwise)
+#   * weasyprint      -> real PDF typesetting (styled-HTML download fallback)
+# chromadb
+# paddlepaddle
+# paddleocr
+# weasyprint

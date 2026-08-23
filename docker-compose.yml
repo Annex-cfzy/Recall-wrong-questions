@@ -1,0 +1,15 @@
+services:
+  recall:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - MOCK_EXTERNAL=true
+    volumes:
+      # Persist the SQLite database across container restarts.
+      - recall-data:/app/backend/data
+
+volumes:
+  recall-data:
