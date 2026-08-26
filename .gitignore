@@ -24,3 +24,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Vite 临时构建缓存
+frontend/vite.config.ts.timestamp-*.mjs
