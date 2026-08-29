@@ -40,11 +40,30 @@ EXCLUDE_DIRS = {
 EXCLUDE_SUFFIXES = (".pyc", ".pyo")
 
 
+def _npm_build_command() -> tuple:
+    """Return (command, use_shell) for `npm run build`.
+
+    On Windows `npm` is really `npm.cmd`; a bare non-shell subprocess call
+    raises FileNotFoundError because CreateProcess won't resolve the `.cmd`
+    extension. Falling back to shell=True lets cmd.exe resolve it.
+    """
+    if os.name == "nt":
+        return "npm run build", True
+    return ["npm", "run", "build"], False
+
+
 def build_frontend() -> None:
     if not (FRONTEND / "package.json").exists():
         sys.exit(f"[ERR] frontend/package.json not found at {FRONTEND}")
+    cmd, use_shell = _npm_build_command()
     print("[1/4] Building frontend (npm run build) ...")
-    subprocess.run(["npm", "run", "build"], cwd=str(FRONTEND), check=True)
+    try:
+        subprocess.run(cmd, cwd=str(FRONTEND), check=True, shell=use_shell)
+    except FileNotFoundError:
+        sys.exit(
+            "[ERR] 未检测到 npm。请先安装 Node.js LTS (https://nodejs.org)，\n"
+            "      安装完成后重新打开终端再运行本脚本。"
+        )
 
 
 def copy_dist() -> None:
@@ -83,8 +102,11 @@ def package() -> None:
 
 
 if __name__ == "__main__":
-    build_frontend()
-    copy_dist()
-    package()
+    try:
+        build_frontend()
+        copy_dist()
+        package()
+    except subprocess.CalledProcessError as e:
+        sys.exit(f"[ERR] 构建或打包失败：{e}")
     print("\nNext: upload recall-fc.zip to Aliyun FC (Python 3.12) and set the "
           "start command + env vars listed above / in 部署上线指南.md.")
