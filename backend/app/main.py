@@ -64,7 +64,13 @@ def health():
 # This catch-all GET route is registered LAST so every explicit /api/* route
 # (and /docs, /openapi.json) registered above matches first; only unmatched
 # paths fall through to the SPA (with index.html fallback for client routing).
-_FRONTEND_DIST = os.path.normpath(os.path.join(str(BASE_DIR), "..", "frontend", "dist"))
+# In production the built SPA is served by FastAPI itself. The dist may live
+# either alongside the backend (../frontend/dist — local dev & Docker image) or
+# embedded inside the backend package (frontend/dist — FC code-package deploy).
+# Prefer the embedded copy when present so a single zip serves both API and SPA.
+_EMBEDDED_DIST = os.path.normpath(os.path.join(str(BASE_DIR), "frontend", "dist"))
+_STANDALONE_DIST = os.path.normpath(os.path.join(str(BASE_DIR), "..", "frontend", "dist"))
+_FRONTEND_DIST = _EMBEDDED_DIST if os.path.isdir(_EMBEDDED_DIST) else _STANDALONE_DIST
 if os.path.isdir(_FRONTEND_DIST):
 
     @app.get("/{full_path:path}")

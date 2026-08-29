@@ -14,9 +14,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_DIR = BASE_DIR / "data"
-UPLOAD_DIR = BASE_DIR / "uploads"
-CHROMA_DIR = DATA_DIR / "chroma"
+# All writable paths can be overridden via env vars. This matters on read-only
+# serverless filesystems (e.g. Aliyun FC) where the code directory is read-only
+# and data must live under /tmp. Defaults keep local/Docker behaviour unchanged.
+DATA_DIR = Path(os.getenv("RECALL_DATA_DIR", str(BASE_DIR / "data")))
+UPLOAD_DIR = Path(os.getenv("RECALL_UPLOAD_DIR", str(BASE_DIR / "uploads")))
+CHROMA_DIR = Path(os.getenv("RECALL_CHROMA_DIR", str(DATA_DIR / "chroma")))
 DB_PATH = Path(os.getenv("RECALL_DB_PATH", str(DATA_DIR / "recall.db")))
 
 DATA_DIR.mkdir(exist_ok=True)
