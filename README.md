@@ -1,5 +1,19 @@
 # Recall — AI 智能错题本
 
+<p align="center">
+  <a href="https://github.com/Annex-cfzy/Recall-wrong-questions"><img src="https://img.shields.io/badge/文档-中文-red?style=for-the-badge" alt="中文文档"></a>
+  <img src="https://img.shields.io/badge/AI-智能错题本-blue?style=for-the-badge" alt="AI 智能错题本">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License MIT">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Vue-3-42b883?style=flat&amp;logo=vue.js" alt="Vue 3">
+  <img src="https://img.shields.io/badge/FastAPI-0.141-009688?style=flat&amp;logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/DeepSeek-API-ff7e3d?style=flat" alt="DeepSeek">
+  <img src="https://img.shields.io/badge/PaddleOCR-VL-2b9cff?style=flat" alt="PaddleOCR">
+  <img src="https://img.shields.io/badge/Local--First-零云依赖-9c27b0?style=flat" alt="Local First">
+</p>
+
 本地优先（local-first）的 AI 错题本 Web 应用。核心价值链路：**录入 → AI 识别归档 → SM-2 复习 → 数据分析**。
 全本地存储（SQLite + 向量库），零云服务依赖，开箱即可运行（外部 AI/OCR 服务缺失时自动降级为本地 Mock）。
 
@@ -19,7 +33,7 @@
 ## 目录结构
 
 ```
-代码开发/
+Recall错题本/
 ├── backend/                # FastAPI 后端
 │   ├── app/
 │   │   ├── api/            # 路由层（notebooks/errors/review/chat/dashboard/export/upgrade）
