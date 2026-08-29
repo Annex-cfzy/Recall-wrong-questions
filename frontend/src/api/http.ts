@@ -4,8 +4,12 @@ import { ElMessage } from 'element-plus'
 import { messageForCode, UI_ERRORS } from '@/constants/errors'
 
 // Axios instance — base path is proxied to the FastAPI backend in dev.
+// In production (separated frontend/backend) you can set VITE_API_BASE to the
+// backend origin (e.g. https://xxx.fc.aliyuncs.com); when unset it falls back
+// to the same-origin "/api" path (used by the integrated deploy & dev proxy).
+const apiBase = (import.meta.env.VITE_API_BASE as string | undefined) || '/api'
 const http = axios.create({
-  baseURL: '/api',
+  baseURL: apiBase,
   timeout: 60000,
 })
 
