@@ -48,7 +48,7 @@ Recall错题本/
 │   └── Dockerfile
 ├── frontend/               # Vue3 前端
 │   └── src/                # pages / components / stores / api / styles
-├── tests/test_cases/       # 各里程碑测试用例文档（M1–M6）
+├── tests/test_cases/       # 各里程碑测试用例文档（M1–M7）
 ├── docker-compose.yml
 └── README.md
 ```
@@ -152,18 +152,47 @@ npm run dev
 二者依赖浏览器原生 API（Web Speech / SpeechSynthesis），**Chrome / Edge 桌面版支持最佳**。
 不支持的浏览器页面已做降级提示；朗读功能离线可用，无需任何外部服务。
 
+### Q8. 后端启动报 `ModuleNotFoundError: No module named 'pydantic_core._pydantic_core'`
+这是 **Python 版本错配**：虚拟环境是 3.12，但装依赖时用了系统默认的 `pip`（你的机器上 `python`/`pip` 默认可能指向 WorkBuddy 托管的 Python 3.13），`pydantic_core` 于是被装成了 `cp313` 的编译二进制，3.12 加载不了 → 报这个错。
+
+**根因**：没有先激活 venv，就用系统 `pip` 把包装进了 3.12 的 venv。
+
+**正确做法**——装依赖前**先激活 venv**，并全程用 `python -m pip`（激活后 `python` 就是 venv 的 3.12）：
+
+```powershell
+cd backend
+.\venv\Scripts\Activate.ps1          # 激活后 python/pip 都指向 venv 的版本
+python -m pip install -r requirements.txt
+```
+
+若已经错配，最干净的处理是重建 venv（在**普通终端**里执行；WorkBuddy 沙箱内因安全策略会拦截部分文件删除/覆盖操作）：
+
+```powershell
+cd backend
+Remove-Item -Recurse -Force venv
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
 ---
 
-## 生产部署（Docker 一键启动）
+## 生产部署
+
+### 方式一：Docker 一键启动（本地 / 自有服务器）
 
 ```bash
-# 在「代码开发」根目录执行
+# 在「Recall错题本」根目录执行
 docker compose up --build
 ```
 
 构建完成后访问 http://localhost:8000 —— FastAPI 会直接托管已构建的前端 `frontend/dist`（见 `app/main.py` 的静态挂载），无需单独部署前端。
 
 数据库持久化在名为 `recall-data` 的卷中。
+
+### 方式二：云端部署（阿里云 FC / EdgeOne Pages）
+
+针对国内网络环境的免费部署方案（函数计算 FC 代码包直传、或 EdgeOne Pages + 阿里云 FC 分离），含域名申请、SQLite 持久化适配、控制台逐步操作与排错，详见 **[部署上线指南.md](部署上线指南.md)**。
 
 ---
 
