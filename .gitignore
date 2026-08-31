@@ -27,3 +27,7 @@ Thumbs.db
 
 # Vite 临时构建缓存
 frontend/vite.config.ts.timestamp-*.mjs
+
+# 构建产物（deploy/build_fc_package.py 生成的 FC 上传包，不应入库）
+recall-fc.zip
+
